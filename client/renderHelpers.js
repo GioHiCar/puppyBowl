@@ -1,4 +1,4 @@
-import { fetchAllPlayers, fetchSinglePlayer } from './ajaxHelpers';
+import { addNewPlayer, fetchAllPlayers, fetchSinglePlayer } from './ajaxHelpers';
 
 const playerContainer = document.getElementById('all-players-container');
 const newPlayerFormContainer = document.getElementById('new-player-form');
@@ -25,6 +25,7 @@ export const renderAllPlayers = (playerList) => {
       </div>
     `;
     playerContainerHTML += pupHTML;
+
   }
 
   // After looping, fill the `playerContainer` div with the HTML we constructed above
@@ -87,5 +88,7 @@ export const renderNewPlayerForm = () => {
     /*
       YOUR CODE HERE
     */
+   event.preventDefault()
+   addNewPlayer({})
   });
 };
