@@ -1,8 +1,12 @@
+<<<<<<< HEAD
 import {
   addNewPlayer,
   fetchAllPlayers,
   fetchSinglePlayer,
 } from "./ajaxHelpers";
+=======
+import { addNewPlayer, fetchAllPlayers, fetchSinglePlayer } from './ajaxHelpers';
+>>>>>>> dd69f39b6a384054dbb14e1fcb9a384fc685589e
 
 const playerContainer = document.getElementById("all-players-container");
 const newPlayerFormContainer = document.getElementById("new-player-form");
@@ -30,6 +34,7 @@ export const renderAllPlayers = (playerList) => {
       </div>
     `;
     playerContainerHTML += pupHTML;
+
   }
 
   // After looping, fill the `playerContainer` div with the HTML we constructed above
@@ -50,6 +55,7 @@ export const renderAllPlayers = (playerList) => {
       /*
         YOUR CODE HERE
       */
+     fetchSinglePlayer(pup.id)
     });
   }
 };
@@ -109,5 +115,7 @@ export const renderNewPlayerForm = () => {
     /*
       YOUR CODE HERE
     */
+   event.preventDefault()
+   addNewPlayer({})
   });
 };
