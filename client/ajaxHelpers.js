@@ -12,43 +12,56 @@ export const fetchAllPlayers = async () => {
   } catch (err) {
     console.error("Uh oh, trouble fetching players!", err);
   }
-
 };
-
 
 export const fetchSinglePlayer = async (playerId) => {
   try {
-    console.log(`${APIURL}players/${playerId}`)
-    const playerInfo = await fetch(`${APIURL}players/${playerId}`)
-    const result = await playerInfo.json();
+    //console.log(`${APIURL}players/${playerId}`)
+    let playerInfo = await fetch(`${APIURL}players/${playerId}`);
+    let result = await playerInfo.json();
     if (result.error) throw result.error;
-    return result.data.players;
+    return result.data.player;
   } catch (err) {
     console.error("Uh oh, trouble fetching players!", err);
   }
 };
 
 export const addNewPlayer = async (playerObj) => {
-  const response = await fetch (`${APIURL}players`,
-  { method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(playerObj)
-});
-const result = await response.json()
-console.log(result)
+  try {
+    const response = await fetch(`${APIURL}players`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(playerObj),
+    });
+    const result = await response.json();
+    return result.data.players;
+  } catch (err) {
+    console.error(err);
+  }
+};
+  //fetchallplayers in store var
+  //pass player store in variables
+  //call renderallp playres functions passing in players
+  //then reset the values back to empty strings
 
-//fetchallplayers in store var
-//pass player store in variables 
-//call renderallp playres functions passing in players 
-//then reset the values back to empty strings
-}
 
+export const removePlayer = async (playerId) => {
+  try {
+    const response = await fetch(`${APIURL}players/${playerId}`, {
+      method: "DELETE",
+    });
+    const result = await response.json();
 
+    if(result.error) throw result.error;
 
-export const removePlayer = async (playerId) => {};
-
+    return;
+    
+  } catch (err) {
+    console.error(err);
+  }
+};
 
 
 export default fetchAllPlayers;

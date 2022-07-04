@@ -1,12 +1,9 @@
-<<<<<<< HEAD
 import {
   addNewPlayer,
   fetchAllPlayers,
   fetchSinglePlayer,
+  removePlayer
 } from "./ajaxHelpers";
-=======
-import { addNewPlayer, fetchAllPlayers, fetchSinglePlayer } from './ajaxHelpers';
->>>>>>> dd69f39b6a384054dbb14e1fcb9a384fc685589e
 
 const playerContainer = document.getElementById("all-players-container");
 const newPlayerFormContainer = document.getElementById("new-player-form");
@@ -31,6 +28,7 @@ export const renderAllPlayers = (playerList) => {
         </div>
         <img src="${pup.imageUrl}" alt="photo of ${pup.name} the puppy">
         <button class="detail-button" data-id=${pup.id}>See details</button>
+        <button class="delete-button" data-id=${pup.id}>Remove Player</button>
       </div>
     `;
     playerContainerHTML += pupHTML;
@@ -46,19 +44,27 @@ export const renderAllPlayers = (playerList) => {
   let detailButtons = [...document.getElementsByClassName("detail-button")];
   for (let i = 0; i < detailButtons.length; i++) {
     const button = detailButtons[i];
-    const pup = playerList[i];
     button.addEventListener("click", async () => {
-      const playerId = await fetchSinglePlayer(pup.id);
-      const newPlayer = await playerId.json();
-      return newPlayer;
-      //console.log(newPlayer)
+      let playerId = await fetchSinglePlayer(button.dataset.id);
+      renderSinglePlayer(playerId);
+      //console.log(playerId)
       /*
         YOUR CODE HERE
       */
-     fetchSinglePlayer(pup.id)
     });
   }
-};
+
+  let deleteButtons = [...document.getElementsByClassName("delete-button")];
+  for (let i = 0; i < deleteButtons.length; i++) {
+    const button = deleteButtons[i];
+    button.addEventListener("click", async () => {
+      await removePlayer(button.dataset.id);
+      const players = await fetchAllPlayers();
+      renderAllPlayers(players);
+    })
+}
+}
+
 export const renderSinglePlayer = (playerObj) => {
   if (!playerObj || !playerObj.id) {
     playerContainer.innerHTML = "<h3>Couldn't find data for this player!</h3>";
@@ -80,12 +86,17 @@ export const renderSinglePlayer = (playerObj) => {
     </div>
   `;
 
+ playerContainer.innerHTML = pupHTML;
+
+
   const btnBack = document.getElementById("see-all");
-  btnBack.addEventListener("click", function () {
-    fetchAllPlayers();
+  btnBack.addEventListener("click", async () => {
+    const players = await fetchAllPlayers();
+    renderAllPlayers(players);
+    renderNewPlayerForm();
   });
 
-  playerContainer.innerHTML = pupHTML;
+ 
 };
 
 export const renderNewPlayerForm = () => {
@@ -103,19 +114,16 @@ export const renderNewPlayerForm = () => {
   let form = document.querySelector("#new-player-form > form");
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
-    const newObj = {
+    let playerData = {
       name: form.elements.name.value,
-      breed: form.elements.breed.value,
-    };
-    await addNewPlayer(newObj);
-    const response = await fetchAllPlayers();
-    renderAllPlayers(response);
+      breed: form.elements.breed.value
+    }
+    const newPlayer = await addNewPlayer(playerData)
+    renderNewPlayerForm(newPlayer);
     event.target.name = "";
-    event.target.breed = "";
-    /*
-      YOUR CODE HERE
-    */
-   event.preventDefault()
-   addNewPlayer({})
-  });
+    //event.target.breed = "";
+
+     const players = await fetchAllPlayers();
+     renderAllPlayers(players);
+});
 };
